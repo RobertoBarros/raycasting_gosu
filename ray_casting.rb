@@ -30,7 +30,7 @@ class RayCasting < Gosu::Window
     @player.walk_direction = button_down?(Gosu::KB_UP) ? 1 : (button_down?(Gosu::KB_DOWN) ? -1 : 0)
 
     @player.update
-    @rays = Ray.cast(@player, @rays_count)
+    @rays = Ray.cast_all(@player, @map, @rays_count)
   end
 
   def draw
