@@ -8,6 +8,8 @@ class Ray
     @angle = normalize(angle)
     @map = map
     @tile_size = map.tile_size.to_f
+    @facing_down = @angle > 0 && @angle < Math::PI
+    @facing_right = @angle < 0.5 * Math::PI || @angle > 1.5 * Math::PI
     @x_wall_hit = 0.0
     @y_wall_hit = 0.0
     @distance = 0
@@ -25,7 +27,7 @@ class Ray
   end
 
   private def facing_down?
-    @angle > 0 && @angle < Math::PI
+    @facing_down
   end
 
   private def facing_up?
@@ -33,7 +35,7 @@ class Ray
   end
 
   private def facing_right?
-    @angle < 0.5 * Math::PI || @angle > 1.5 * Math::PI
+    @facing_right
   end
 
   private def facing_left?

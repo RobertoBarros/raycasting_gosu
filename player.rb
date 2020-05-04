@@ -3,7 +3,7 @@ class Player
   attr_reader :x, :y, :rotation_angle
 
   RADIUS = 3
-  MOVE_SPEED = 2
+  MOVE_SPEED = 4
   ROTATION_SPEED = 3 * (Math::PI / 180)
 
   def initialize(map)
