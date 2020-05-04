@@ -8,11 +8,11 @@ require_relative 'ray'
 
 class RayCasting < Gosu::Window
 
-  WALL_STRIP = 50
+  WALL_STRIP = 1
 
   def initialize
 
-    @map = Map.new(32)
+    @map = Map.new(64)
 
     @player = Player.new(@map)
 

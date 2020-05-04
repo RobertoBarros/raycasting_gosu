@@ -11,6 +11,11 @@ class Ray
     @x_wall_hit = 0.0
     @y_wall_hit = 0.0
     @distance = 0
+    @vertical_hit = false
+  end
+
+  def vertical_hit?
+    @vertical_hit
   end
 
   private def normalize(angle)
@@ -35,10 +40,16 @@ class Ray
     !facing_right?
   end
 
+  private def distance_between_point(x1, y1, x2, y2)
+    Math.sqrt(((x2 - x1) ** 2) + ((y2 - y1) ** 2))
+  end
+
   def cast(column)
     #----------------------------------------------------------------------
     #         HORIZONTAL GRID INTERCEPTION
     #----------------------------------------------------------------------
+    x_horizontal_wall_hit = 0
+    y_horizontal_wall_hit = 0
 
     # Find the x and y coordenates of first horizontal grid interception
     y_intercept = (@y / @tile_size).floor * @tile_size
@@ -57,12 +68,14 @@ class Ray
     next_x_intercept = x_intercept
     next_y_intercept = facing_up? ? ( y_intercept - 1) : y_intercept
 
-    fount_horizontal_hit = false
+    found_horizontal_hit = false
     while( next_x_intercept >= 0 && next_x_intercept <= @map.width && next_y_intercept >=0 && next_y_intercept <= @map.height )
 
 
       if @map.wall?(next_x_intercept, next_y_intercept)
-        fount_horizontal_hit = true
+        found_horizontal_hit = true
+        x_horizontal_wall_hit = next_x_intercept
+        y_horizontal_wall_hit = next_y_intercept
         break
       else
         next_x_intercept += x_step
@@ -70,10 +83,57 @@ class Ray
       end
     end
 
-    @x_wall_hit = next_x_intercept
-    @y_wall_hit = next_y_intercept
+    #----------------------------------------------------------------------
+    #         VERTICAL GRID INTERCEPTION
+    #----------------------------------------------------------------------
+    x_vertical_wall_hit = 0
+    y_vertical_wall_hit = 0
 
-    # puts "next_x_intercept=#{next_x_intercept} | next_y_intercept=#{next_y_intercept} | hit=#{fount_horizontal_hit}"
+    # Find the x and y coordenates of first vertical grid interception
+    x_intercept = (@x / @tile_size).floor * @tile_size
+    x_intercept += @tile_size if facing_right?
+
+    y_intercept = @y + ((x_intercept - @x) * Math.tan(@angle))
+
+    # Calculate the increment x_step and y_step
+    x_step = @tile_size
+    x_step = - x_step if facing_left?
+
+    y_step = @tile_size * Math.tan(@angle)
+    y_step = - y_step if facing_up? && y_step > 0
+    y_step = - y_step if facing_down? && y_step < 0
+
+    next_x_intercept = facing_left? ? ( x_intercept - 1) : x_intercept
+    next_y_intercept = y_intercept
+
+    found_vertical_hit = false
+    while( next_x_intercept >= 0 && next_x_intercept <= @map.width && next_y_intercept >=0 && next_y_intercept <= @map.height )
+
+
+      if @map.wall?(next_x_intercept, next_y_intercept)
+        found_vertical_hit = true
+        x_vertical_wall_hit = next_x_intercept
+        y_vertical_wall_hit = next_y_intercept
+        break
+      else
+        next_x_intercept += x_step
+        next_y_intercept += y_step
+      end
+    end
+
+
+    #----------------------------------------------------------------------
+    #         CALCULATE DISTANCES
+    #----------------------------------------------------------------------
+    horizontal_distance = found_horizontal_hit ? distance_between_point(@x, @y, x_horizontal_wall_hit, y_horizontal_wall_hit) : Float::INFINITY
+
+    vertical_distance = found_vertical_hit ? distance_between_point(@x, @y, x_vertical_wall_hit, y_vertical_wall_hit) : Float::INFINITY
+
+    # Use the smallest hit distance
+    @x_wall_hit = (horizontal_distance < vertical_distance) ? x_horizontal_wall_hit : x_vertical_wall_hit
+    @y_wall_hit = (horizontal_distance < vertical_distance) ? y_horizontal_wall_hit : y_vertical_wall_hit
+    @distance = (horizontal_distance < vertical_distance) ? horizontal_distance : vertical_distance
+    @vertical_hit = vertical_distance < horizontal_distance
   end
 
   def draw
@@ -90,8 +150,7 @@ class Ray
     angle = player.rotation_angle - (FOV / 2)
     rays = []
 
-    # (0..rays_count - 1).each do |column|
-    (0..0).each do |column|
+    (0..rays_count - 1).each do |column|
       ray = Ray.new(player, map, angle)
 
       ray.cast(column)
