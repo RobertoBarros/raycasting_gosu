@@ -5,14 +5,16 @@ require_relative 'circle'
 require_relative 'map'
 require_relative 'player'
 require_relative 'ray'
+require_relative 'wall_3d'
 
 class RayCasting < Gosu::Window
 
   WALL_STRIP = 1
+  MINIMAP_SCALE = 0.2
 
   def initialize
 
-    @map = Map.new(64)
+    @map = Map.new(64, MINIMAP_SCALE)
 
     @player = Player.new(@map)
 
@@ -22,7 +24,6 @@ class RayCasting < Gosu::Window
     @rays_count = @map.width / WALL_STRIP
 
     @rays = []
-
   end
 
   def update
@@ -31,12 +32,13 @@ class RayCasting < Gosu::Window
 
     @player.update
     @rays = Ray.cast_all(@player, @map, @rays_count)
+    @wall_3d = Wall3d.new(@rays_count, @rays, @map, WALL_STRIP)
   end
 
   def draw
+    @wall_3d.draw
     @map.draw
     @player.draw
-
     @rays.each { |ray| ray.draw  }
   end
 end

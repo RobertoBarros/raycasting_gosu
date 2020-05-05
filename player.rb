@@ -27,16 +27,17 @@ class Player
   end
 
   def draw
-    Gosu.draw_circle(@x, @y, RADIUS, Gosu::Color::RED.dup)
+    Gosu.draw_circle(@map.scale * @x,
+                     @map.scale * @y,
+                     @map.scale * RADIUS,
+                     Gosu::Color::RED.dup)
 
-    Gosu.draw_line(@x,
-                   @y,
+    Gosu.draw_line(@map.scale * @x,
+                   @map.scale * @y,
                    Gosu::Color::RED.dup,
-                   @x + (Math.cos(@rotation_angle) * 30),
-                   @y + (Math.sin(@rotation_angle) * 30),
+                   @map.scale * (@x + (Math.cos(@rotation_angle) * 50)),
+                   @map.scale * (@y + (Math.sin(@rotation_angle) * 50)),
                    Gosu::Color::RED.dup)
-
-    # puts "walk direction: #{@walk_direction} - turn direction: #{@turn_direction}"
   end
 
 end

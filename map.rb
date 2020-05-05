@@ -1,23 +1,24 @@
 class Map
-  attr_reader :rows, :cols, :tile_size, :width, :height
+  attr_reader :rows, :cols, :tile_size, :width, :height, :scale
 
-  def initialize(tile_size)
+  def initialize(tile_size, scale)
     @grid = [
       [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
       [1,0,0,0,0,1,0,0,0,0,0,0,0,0,1],
       [1,0,0,0,0,1,0,0,0,0,0,0,0,0,1],
-      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,0,0,1,1,1,0,0,0,0,0,0,0,0,1],
       [1,0,0,0,0,0,0,0,0,0,0,1,1,1,1],
-      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+      [1,0,0,1,1,1,1,0,0,0,0,0,0,0,1],
+      [1,0,0,0,0,0,1,0,0,0,0,0,0,0,1],
       [1,0,0,0,0,0,1,0,0,1,0,0,0,0,1],
-      [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-      [1,0,0,0,0,0,1,0,0,1,0,0,0,0,1],
+      [1,0,1,1,1,0,0,0,0,1,0,0,0,0,1],
+      [1,0,1,0,0,0,1,0,0,1,0,0,0,0,1],
       [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]].freeze
 
     @rows = @grid.count
     @cols = @grid.first.count
     @tile_size = tile_size
+    @scale = scale
     @width = @cols * @tile_size
     @height = @rows * @tile_size
 
@@ -36,15 +37,12 @@ class Map
       (0..@cols-1).each do |col|
         tileX = col * @tile_size
         tileY = row * @tile_size
-        if @grid[row][col] == 0
-          Gosu.draw_rect(tileX, tileY, @tile_size, @tile_size, Gosu::Color::GRAY.dup)
-          Gosu.draw_rect(tileX+1, tileY+1, @tile_size-1, @tile_size-1, Gosu::Color::WHITE.dup)
-        else
-          Gosu.draw_rect(tileX, tileY, @tile_size, @tile_size, Gosu::Color::WHITE.dup)
-          Gosu.draw_rect(tileX+1, tileY+1, @tile_size-1, @tile_size-1, Gosu::Color::GRAY.dup)
-        end
-
-
+        color = @grid[row][col] == 0 ? Gosu::Color::WHITE.dup : Gosu::Color::GRAY.dup
+        Gosu.draw_rect(@scale * tileX,
+                       @scale * tileY,
+                       @scale * @tile_size,
+                       @scale * @tile_size,
+                       color)
       end
     end
   end

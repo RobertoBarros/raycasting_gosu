@@ -1,5 +1,6 @@
 class Ray
   FOV = 60 * (Math::PI / 180)
+  attr_reader :distance
 
   def initialize(player, map, angle)
     @player = player
@@ -139,12 +140,12 @@ class Ray
   end
 
   def draw
-    Gosu.draw_line(@x,
-                   @y,
-                   Gosu::Color::BLUE.dup,
-                   @x_wall_hit,
-                   @y_wall_hit,
-                   Gosu::Color::BLUE.dup,)
+    Gosu.draw_line(@map.scale * @x,
+                   @map.scale * @y,
+                   Gosu::Color::GREEN.dup,
+                   @map.scale * @x_wall_hit,
+                   @map.scale * @y_wall_hit,
+                   Gosu::Color::GREEN.dup,)
 
   end
 
@@ -165,5 +166,4 @@ class Ray
 
     rays
   end
-
 end
