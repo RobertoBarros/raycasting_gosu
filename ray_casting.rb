@@ -1,22 +1,21 @@
 #!/usr/bin/env ruby
-
 require 'gosu'
 require_relative 'circle'
 require_relative 'map'
 require_relative 'player'
 require_relative 'ray'
 require_relative 'wall_3d'
+require_relative 'background'
 
 class RayCasting < Gosu::Window
 
-  WALL_STRIP = 1
+  WALL_STRIP = 2
   MINIMAP_SCALE = 0.2
 
   def initialize
-
     @map = Map.new(64, MINIMAP_SCALE)
-
     @player = Player.new(@map)
+    @background = Background.new(@map)
 
     super @map.width, @map.height
     self.caption = "Ray Casting Game"
@@ -32,10 +31,11 @@ class RayCasting < Gosu::Window
 
     @player.update
     @rays = Ray.cast_all(@player, @map, @rays_count)
-    @wall_3d = Wall3d.new(@rays_count, @rays, @map, WALL_STRIP)
+    @wall_3d = Wall3d.new(@rays_count, @rays, @map, @player, WALL_STRIP)
   end
 
   def draw
+    @background.draw
     @wall_3d.draw
     @map.draw
     @player.draw

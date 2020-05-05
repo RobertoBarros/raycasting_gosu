@@ -1,6 +1,6 @@
 class Ray
   FOV = 60 * (Math::PI / 180)
-  attr_reader :distance
+  attr_reader :distance, :angle
 
   def initialize(player, map, angle)
     @player = player
@@ -47,7 +47,7 @@ class Ray
     Math.sqrt(((x2 - x1) ** 2) + ((y2 - y1) ** 2))
   end
 
-  def cast(column)
+  def cast
     #----------------------------------------------------------------------
     #         HORIZONTAL GRID INTERCEPTION
     #----------------------------------------------------------------------
@@ -69,13 +69,13 @@ class Ray
     x_step = - x_step if facing_right? && x_step < 0
 
     next_x_intercept = x_intercept
-    next_y_intercept = facing_up? ? ( y_intercept - 1) : y_intercept
+    next_y_intercept = y_intercept
 
     found_horizontal_hit = false
     while( next_x_intercept >= 0 && next_x_intercept <= @map.width && next_y_intercept >=0 && next_y_intercept <= @map.height )
 
 
-      if @map.wall?(next_x_intercept, next_y_intercept)
+      if @map.wall?(next_x_intercept, facing_up? ? next_y_intercept - 1 : next_y_intercept)
         found_horizontal_hit = true
         x_horizontal_wall_hit = next_x_intercept
         y_horizontal_wall_hit = next_y_intercept
@@ -106,14 +106,14 @@ class Ray
     y_step = - y_step if facing_up? && y_step > 0
     y_step = - y_step if facing_down? && y_step < 0
 
-    next_x_intercept = facing_left? ? ( x_intercept - 1) : x_intercept
+    next_x_intercept = x_intercept
     next_y_intercept = y_intercept
 
     found_vertical_hit = false
     while( next_x_intercept >= 0 && next_x_intercept <= @map.width && next_y_intercept >=0 && next_y_intercept <= @map.height )
 
 
-      if @map.wall?(next_x_intercept, next_y_intercept)
+      if @map.wall?(facing_left? ? next_x_intercept - 1 : next_x_intercept, next_y_intercept)
         found_vertical_hit = true
         x_vertical_wall_hit = next_x_intercept
         y_vertical_wall_hit = next_y_intercept
@@ -133,10 +133,17 @@ class Ray
     vertical_distance = found_vertical_hit ? distance_between_point(@x, @y, x_vertical_wall_hit, y_vertical_wall_hit) : Float::INFINITY
 
     # Use the smallest hit distance
-    @x_wall_hit = (horizontal_distance < vertical_distance) ? x_horizontal_wall_hit : x_vertical_wall_hit
-    @y_wall_hit = (horizontal_distance < vertical_distance) ? y_horizontal_wall_hit : y_vertical_wall_hit
-    @distance = (horizontal_distance < vertical_distance) ? horizontal_distance : vertical_distance
-    @vertical_hit = vertical_distance < horizontal_distance
+    if horizontal_distance < vertical_distance
+      @x_wall_hit = x_horizontal_wall_hit
+      @y_wall_hit = y_horizontal_wall_hit
+      @distance = horizontal_distance
+      @vertical_hit = false
+    else
+      @x_wall_hit = x_vertical_wall_hit
+      @y_wall_hit = y_vertical_wall_hit
+      @distance = vertical_distance
+      @vertical_hit = true
+    end
   end
 
   def draw
@@ -153,14 +160,10 @@ class Ray
     angle = player.rotation_angle - (FOV / 2)
     rays = []
 
-    (0..rays_count - 1).each do |column|
+    rays_count.times do
       ray = Ray.new(player, map, angle)
-
-      ray.cast(column)
-
+      ray.cast
       rays << ray
-
-
       angle += FOV / rays_count
     end
 
