@@ -4,7 +4,7 @@ class Player
 
   RADIUS = 3
   MOVE_SPEED = 4
-  ROTATION_SPEED = 3 * (Math::PI / 180)
+  ROTATION_SPEED = 2 * (Math::PI / 180)
 
   def initialize(map)
     @x = map.width / 2
