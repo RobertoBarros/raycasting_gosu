@@ -6,14 +6,16 @@ require_relative 'player'
 require_relative 'ray'
 require_relative 'wall_3d'
 require_relative 'background'
+require_relative 'texture'
 
 class RayCasting < Gosu::Window
 
-  WALL_STRIP = 2
+  WALL_STRIP = 4
   MINIMAP_SCALE = 0.2
+  TILE_SIZE = 64
 
   def initialize
-    @map = Map.new(64, MINIMAP_SCALE)
+    @map = Map.new(TILE_SIZE, MINIMAP_SCALE)
     @player = Player.new(@map)
     @background = Background.new(@map)
 
@@ -23,6 +25,7 @@ class RayCasting < Gosu::Window
     @rays_count = @map.width / WALL_STRIP
 
     @rays = []
+    @texture = Texture.new(TILE_SIZE)
   end
 
   def update

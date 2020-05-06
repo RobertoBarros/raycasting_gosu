@@ -6,6 +6,7 @@ class Wall3d
     @map = map
     @player = player
     @wall_strip = wall_strip
+    @texture = Texture.new(@map.tile_size)
   end
 
   def draw
@@ -29,11 +30,19 @@ class Wall3d
 
       color = Gosu::Color.new(255, color_value[0], color_value[1], color_value[2])
 
-      Gosu.draw_rect(column * @wall_strip,
-                     (@map.width / 2) - (wall_height / 2),
-                     @wall_strip,
-                     wall_height,
-                     color)
+      # Gosu.draw_rect(column * @wall_strip,
+      #                (@map.width / 2) - (wall_height / 2),
+      #                @wall_strip,
+      #                wall_height,
+      #                color)
+
+      @texture.draw_rect(column * @wall_strip,
+                        (@map.width / 2) - (wall_height / 2),
+                        @wall_strip,
+                        wall_height,
+                        ray.vertical_hit?,
+                        ray.slice)
+
     end
   end
 end

@@ -1,6 +1,6 @@
 class Ray
   FOV = 60 * (Math::PI / 180)
-  attr_reader :distance, :angle, :color
+  attr_reader :distance, :angle, :color, :slice
 
   def initialize(player, map, angle)
     @player = player
@@ -16,6 +16,7 @@ class Ray
     @distance = 0
     @vertical_hit = false
     @color = 0
+    @slice = 0
   end
 
   def vertical_hit?
@@ -140,12 +141,14 @@ class Ray
       @distance = horizontal_distance
       @vertical_hit = false
       @color = @map.wall_color(@x_wall_hit, facing_up? ? @y_wall_hit - 1 : @y_wall_hit)
+      @slice = (x_horizontal_wall_hit % @map.tile_size).floor.to_i
     else
       @x_wall_hit = x_vertical_wall_hit
       @y_wall_hit = y_vertical_wall_hit
       @distance = vertical_distance
       @vertical_hit = true
       @color = @map.wall_color(facing_left? ? @x_wall_hit - 1 : @x_wall_hit, @y_wall_hit)
+      @slice = (y_vertical_wall_hit % @map.tile_size).floor.to_i
     end
 
   end

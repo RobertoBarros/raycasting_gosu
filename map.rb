@@ -44,9 +44,10 @@ class Map
   def draw
     (0..@rows-1).each do |row|
       (0..@cols-1).each do |col|
+        next unless @grid[row][col] != 0
         tileX = col * @tile_size
         tileY = row * @tile_size
-        color = @grid[row][col] == 0 ? Gosu::Color::WHITE.dup : Gosu::Color::GRAY.dup
+        color = Gosu::Color::GRAY
         Gosu.draw_rect(@scale * tileX,
                        @scale * tileY,
                        @scale * @tile_size,
