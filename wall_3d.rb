@@ -18,16 +18,22 @@ class Wall3d
       projection_distance = (@map.width / 2) / Math.tan(Ray::FOV)
       wall_height =(@map.tile_size / ray_distance) * projection_distance
 
-      # color = Gosu::Color::WHITE.dup
-      alpha = 255 # 200 * (1 - (ray_distance / 500)) + 55
+      color_tone = case ray.color
+                   when 1 then [139, 195, 74] # green
+                   when 2 then [103, 58, 183] # purple
+                   when 3 then [255, 152, 0 ] # orange
+                   else        [0,   0,   0 ] # black
+                   end
 
-      color = ray.vertical_hit? ? 200 : 255
+      color_value =  ray.vertical_hit? ? color_tone.map {|c| c - ( c * 0.2)} : color_tone
+
+      color = Gosu::Color.new(255, color_value[0], color_value[1], color_value[2])
 
       Gosu.draw_rect(column * @wall_strip,
                      (@map.width / 2) - (wall_height / 2),
                      @wall_strip,
                      wall_height,
-                     Gosu::Color.new(alpha, color, color, color))
+                     color)
     end
   end
 end
