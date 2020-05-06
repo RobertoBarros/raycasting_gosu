@@ -33,7 +33,7 @@ class Map
   end
 
   def wall_color(x, y)
-    return true if x <= 0 || x >= @width || y <= 0 || y >= @height
+    return 0 if x <= 0 || x >= @width || y <= 0 || y >= @height
 
     row = (y / @tile_size).floor
     col = (x / @tile_size).floor
