@@ -40,6 +40,10 @@ class RayCasting < Gosu::Window
   def draw
     @background.draw
     @wall_3d.draw
+    draw_minimap
+  end
+
+  def draw_minimap
     @map.draw
     @player.draw
     @rays.each { |ray| ray.draw  }
