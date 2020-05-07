@@ -24,7 +24,7 @@ class Texture
     y3 = y + height
     x4 = (x + width)
     y4 = y + height
-    c = dark ? Gosu::Color.new(255, 130, 130, 130) : Gosu::Color.new(255, 255, 255, 255)
+    c = dark ? Gosu::Color.new(255, 150, 150, 150) : Gosu::Color.new(255, 255, 255, 255)
     @slices[id][index].draw_as_quad(x1, y1, c, x2, y2, c, x3, y3, c, x4, y4, c, 0)
   end
 
