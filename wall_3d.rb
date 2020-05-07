@@ -36,12 +36,14 @@ class Wall3d
       #                wall_height,
       #                color)
 
-      @texture.draw_rect(column * @wall_strip,
-                        (@map.width / 2) - (wall_height / 2),
-                        @wall_strip,
-                        wall_height,
-                        ray.vertical_hit?,
-                        ray.slice)
+
+      @texture.draw_rect(ray.color - 1,
+                         column * @wall_strip,
+                         (@map.width / 2) - (wall_height / 2),
+                         @wall_strip,
+                         wall_height,
+                         ray.vertical_hit?,
+                         ray.slice)
 
     end
   end

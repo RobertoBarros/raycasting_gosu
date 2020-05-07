@@ -141,14 +141,14 @@ class Ray
       @distance = horizontal_distance
       @vertical_hit = false
       @color = @map.wall_color(@x_wall_hit, facing_up? ? @y_wall_hit - 1 : @y_wall_hit)
-      @slice = (x_horizontal_wall_hit % @map.tile_size).floor.to_i
+      @slice = (x_horizontal_wall_hit % @map.tile_size)
     else
       @x_wall_hit = x_vertical_wall_hit
       @y_wall_hit = y_vertical_wall_hit
       @distance = vertical_distance
       @vertical_hit = true
       @color = @map.wall_color(facing_left? ? @x_wall_hit - 1 : @x_wall_hit, @y_wall_hit)
-      @slice = (y_vertical_wall_hit % @map.tile_size).floor.to_i
+      @slice = (y_vertical_wall_hit % @map.tile_size)
     end
 
   end

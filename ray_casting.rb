@@ -9,8 +9,7 @@ require_relative 'background'
 require_relative 'texture'
 
 class RayCasting < Gosu::Window
-
-  WALL_STRIP = 4
+  WALL_STRIP = 1
   MINIMAP_SCALE = 0.2
   TILE_SIZE = 64
 
@@ -41,12 +40,20 @@ class RayCasting < Gosu::Window
     @background.draw
     @wall_3d.draw
     draw_minimap
+
+    # (0..300).each do |slice|
+    #   x = slice * (420/TILE_SIZE)
+    #   width = 420/TILE_SIZE
+    #   height = 420
+    #   puts "x=#{x} | width=#{width} | height=#{height}"
+    #   @texture.draw_rect(x, 0, width, height, false, slice)
+    # end
   end
 
   def draw_minimap
     @map.draw
     @player.draw
-    @rays.each { |ray| ray.draw  }
+    @rays.each(&:draw)
   end
 end
 

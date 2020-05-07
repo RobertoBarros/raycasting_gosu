@@ -1,22 +1,31 @@
 class Texture
-  WIDTH = 420
-  HEIGHT = 420
+  WIDTH = 128
+  HEIGHT = 128
+  HORIZONTAL_SCALING = 4
+
   def initialize(tile_size)
     @tile_size = tile_size
-    @wall_slices = Gosu::Image.load_tiles('wall.png', WIDTH/@tile_size, HEIGHT, {tileable: true})
+
+    files = ['wolf1.png', 'wolf2.png', 'wolf3.png']
+
+    slice_width = WIDTH / (@tile_size / HORIZONTAL_SCALING)
+    @slices = files.map { |file| Gosu::Image.load_tiles(file, slice_width , HEIGHT, { tileable: true }) }
+
+    @slices_count = WIDTH / slice_width
   end
 
-  def draw_rect(x,y,width,height,dark,slice_index)
+  def draw_rect(id, x, y, width, height, dark, slice_index)
+    index = slice_index % @slices_count
     x1 = x
     y1 = y
-    x2 = x1 + width
+    x2 = (x + width)
     y2 = y
     x3 = x
     y3 = y + height
-    x4 = x + width
+    x4 = (x + width)
     y4 = y + height
-    c = dark ? Gosu::Color.new(255,130,130,130) : Gosu::Color.new(255,255,255,255)
-    @wall_slices[slice_index].draw_as_quad(x1,y1,c,x2,y2,c,x3,y3,c,x4,y4,c,0)
+    c = dark ? Gosu::Color.new(255, 130, 130, 130) : Gosu::Color.new(255, 255, 255, 255)
+    @slices[id][index].draw_as_quad(x1, y1, c, x2, y2, c, x3, y3, c, x4, y4, c, 0)
   end
 
   # def draw
